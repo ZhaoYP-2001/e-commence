@@ -13,7 +13,7 @@ import (
 type Client interface {
 	DeliverTokenByRPC(ctx context.Context, Req *auth.DeliverTokenReq, callOptions ...callopt.Option) (r *auth.DeliveryResp, err error)
 	VerifyTokenByRPC(ctx context.Context, Req *auth.VerifyTokenReq, callOptions ...callopt.Option) (r *auth.VerifyResp, err error)
-	GetPubkeyByRPC(ctx context.Context, Req *auth.Empty, callOptions ...callopt.Option) (r *auth.PubkeyResp, err error)
+	RefreshTokenByRPC(ctx context.Context, Req *auth.RefreshTokenReq, callOptions ...callopt.Option) (r *auth.RefreshResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -55,7 +55,7 @@ func (p *kAuthServiceClient) VerifyTokenByRPC(ctx context.Context, Req *auth.Ver
 	return p.kClient.VerifyTokenByRPC(ctx, Req)
 }
 
-func (p *kAuthServiceClient) GetPubkeyByRPC(ctx context.Context, Req *auth.Empty, callOptions ...callopt.Option) (r *auth.PubkeyResp, err error) {
+func (p *kAuthServiceClient) RefreshTokenByRPC(ctx context.Context, Req *auth.RefreshTokenReq, callOptions ...callopt.Option) (r *auth.RefreshResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.GetPubkeyByRPC(ctx, Req)
+	return p.kClient.RefreshTokenByRPC(ctx, Req)
 }

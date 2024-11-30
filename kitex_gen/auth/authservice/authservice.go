@@ -29,10 +29,10 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingUnary),
 	),
-	"GetPubkeyByRPC": kitex.NewMethodInfo(
-		getPubkeyByRPCHandler,
-		newGetPubkeyByRPCArgs,
-		newGetPubkeyByRPCResult,
+	"RefreshTokenByRPC": kitex.NewMethodInfo(
+		refreshTokenByRPCHandler,
+		newRefreshTokenByRPCArgs,
+		newRefreshTokenByRPCResult,
 		false,
 		kitex.WithStreamingMode(kitex.StreamingUnary),
 	),
@@ -408,73 +408,73 @@ func (p *VerifyTokenByRPCResult) GetResult() interface{} {
 	return p.Success
 }
 
-func getPubkeyByRPCHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+func refreshTokenByRPCHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	switch s := arg.(type) {
 	case *streaming.Args:
 		st := s.Stream
-		req := new(auth.Empty)
+		req := new(auth.RefreshTokenReq)
 		if err := st.RecvMsg(req); err != nil {
 			return err
 		}
-		resp, err := handler.(auth.AuthService).GetPubkeyByRPC(ctx, req)
+		resp, err := handler.(auth.AuthService).RefreshTokenByRPC(ctx, req)
 		if err != nil {
 			return err
 		}
 		return st.SendMsg(resp)
-	case *GetPubkeyByRPCArgs:
-		success, err := handler.(auth.AuthService).GetPubkeyByRPC(ctx, s.Req)
+	case *RefreshTokenByRPCArgs:
+		success, err := handler.(auth.AuthService).RefreshTokenByRPC(ctx, s.Req)
 		if err != nil {
 			return err
 		}
-		realResult := result.(*GetPubkeyByRPCResult)
+		realResult := result.(*RefreshTokenByRPCResult)
 		realResult.Success = success
 		return nil
 	default:
 		return errInvalidMessageType
 	}
 }
-func newGetPubkeyByRPCArgs() interface{} {
-	return &GetPubkeyByRPCArgs{}
+func newRefreshTokenByRPCArgs() interface{} {
+	return &RefreshTokenByRPCArgs{}
 }
 
-func newGetPubkeyByRPCResult() interface{} {
-	return &GetPubkeyByRPCResult{}
+func newRefreshTokenByRPCResult() interface{} {
+	return &RefreshTokenByRPCResult{}
 }
 
-type GetPubkeyByRPCArgs struct {
-	Req *auth.Empty
+type RefreshTokenByRPCArgs struct {
+	Req *auth.RefreshTokenReq
 }
 
-func (p *GetPubkeyByRPCArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+func (p *RefreshTokenByRPCArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetReq() {
-		p.Req = new(auth.Empty)
+		p.Req = new(auth.RefreshTokenReq)
 	}
 	return p.Req.FastRead(buf, _type, number)
 }
 
-func (p *GetPubkeyByRPCArgs) FastWrite(buf []byte) (n int) {
+func (p *RefreshTokenByRPCArgs) FastWrite(buf []byte) (n int) {
 	if !p.IsSetReq() {
 		return 0
 	}
 	return p.Req.FastWrite(buf)
 }
 
-func (p *GetPubkeyByRPCArgs) Size() (n int) {
+func (p *RefreshTokenByRPCArgs) Size() (n int) {
 	if !p.IsSetReq() {
 		return 0
 	}
 	return p.Req.Size()
 }
 
-func (p *GetPubkeyByRPCArgs) Marshal(out []byte) ([]byte, error) {
+func (p *RefreshTokenByRPCArgs) Marshal(out []byte) ([]byte, error) {
 	if !p.IsSetReq() {
 		return out, nil
 	}
 	return proto.Marshal(p.Req)
 }
 
-func (p *GetPubkeyByRPCArgs) Unmarshal(in []byte) error {
-	msg := new(auth.Empty)
+func (p *RefreshTokenByRPCArgs) Unmarshal(in []byte) error {
+	msg := new(auth.RefreshTokenReq)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -482,59 +482,59 @@ func (p *GetPubkeyByRPCArgs) Unmarshal(in []byte) error {
 	return nil
 }
 
-var GetPubkeyByRPCArgs_Req_DEFAULT *auth.Empty
+var RefreshTokenByRPCArgs_Req_DEFAULT *auth.RefreshTokenReq
 
-func (p *GetPubkeyByRPCArgs) GetReq() *auth.Empty {
+func (p *RefreshTokenByRPCArgs) GetReq() *auth.RefreshTokenReq {
 	if !p.IsSetReq() {
-		return GetPubkeyByRPCArgs_Req_DEFAULT
+		return RefreshTokenByRPCArgs_Req_DEFAULT
 	}
 	return p.Req
 }
 
-func (p *GetPubkeyByRPCArgs) IsSetReq() bool {
+func (p *RefreshTokenByRPCArgs) IsSetReq() bool {
 	return p.Req != nil
 }
 
-func (p *GetPubkeyByRPCArgs) GetFirstArgument() interface{} {
+func (p *RefreshTokenByRPCArgs) GetFirstArgument() interface{} {
 	return p.Req
 }
 
-type GetPubkeyByRPCResult struct {
-	Success *auth.PubkeyResp
+type RefreshTokenByRPCResult struct {
+	Success *auth.RefreshResp
 }
 
-var GetPubkeyByRPCResult_Success_DEFAULT *auth.PubkeyResp
+var RefreshTokenByRPCResult_Success_DEFAULT *auth.RefreshResp
 
-func (p *GetPubkeyByRPCResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+func (p *RefreshTokenByRPCResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(auth.PubkeyResp)
+		p.Success = new(auth.RefreshResp)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
 
-func (p *GetPubkeyByRPCResult) FastWrite(buf []byte) (n int) {
+func (p *RefreshTokenByRPCResult) FastWrite(buf []byte) (n int) {
 	if !p.IsSetSuccess() {
 		return 0
 	}
 	return p.Success.FastWrite(buf)
 }
 
-func (p *GetPubkeyByRPCResult) Size() (n int) {
+func (p *RefreshTokenByRPCResult) Size() (n int) {
 	if !p.IsSetSuccess() {
 		return 0
 	}
 	return p.Success.Size()
 }
 
-func (p *GetPubkeyByRPCResult) Marshal(out []byte) ([]byte, error) {
+func (p *RefreshTokenByRPCResult) Marshal(out []byte) ([]byte, error) {
 	if !p.IsSetSuccess() {
 		return out, nil
 	}
 	return proto.Marshal(p.Success)
 }
 
-func (p *GetPubkeyByRPCResult) Unmarshal(in []byte) error {
-	msg := new(auth.PubkeyResp)
+func (p *RefreshTokenByRPCResult) Unmarshal(in []byte) error {
+	msg := new(auth.RefreshResp)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -542,22 +542,22 @@ func (p *GetPubkeyByRPCResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *GetPubkeyByRPCResult) GetSuccess() *auth.PubkeyResp {
+func (p *RefreshTokenByRPCResult) GetSuccess() *auth.RefreshResp {
 	if !p.IsSetSuccess() {
-		return GetPubkeyByRPCResult_Success_DEFAULT
+		return RefreshTokenByRPCResult_Success_DEFAULT
 	}
 	return p.Success
 }
 
-func (p *GetPubkeyByRPCResult) SetSuccess(x interface{}) {
-	p.Success = x.(*auth.PubkeyResp)
+func (p *RefreshTokenByRPCResult) SetSuccess(x interface{}) {
+	p.Success = x.(*auth.RefreshResp)
 }
 
-func (p *GetPubkeyByRPCResult) IsSetSuccess() bool {
+func (p *RefreshTokenByRPCResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
-func (p *GetPubkeyByRPCResult) GetResult() interface{} {
+func (p *RefreshTokenByRPCResult) GetResult() interface{} {
 	return p.Success
 }
 
@@ -591,11 +591,11 @@ func (p *kClient) VerifyTokenByRPC(ctx context.Context, Req *auth.VerifyTokenReq
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) GetPubkeyByRPC(ctx context.Context, Req *auth.Empty) (r *auth.PubkeyResp, err error) {
-	var _args GetPubkeyByRPCArgs
+func (p *kClient) RefreshTokenByRPC(ctx context.Context, Req *auth.RefreshTokenReq) (r *auth.RefreshResp, err error) {
+	var _args RefreshTokenByRPCArgs
 	_args.Req = Req
-	var _result GetPubkeyByRPCResult
-	if err = p.c.Call(ctx, "GetPubkeyByRPC", &_args, &_result); err != nil {
+	var _result RefreshTokenByRPCResult
+	if err = p.c.Call(ctx, "RefreshTokenByRPC", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
